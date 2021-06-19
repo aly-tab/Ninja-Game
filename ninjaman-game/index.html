@@ -64,6 +64,15 @@
 			padding-top:  15px;
 			text-align: center;
 		}
+		#timer {
+			background-color: black;
+			height: 65px;
+			width: 160px;
+			color: white;
+			font-size:  40px;
+			padding-top:  15px;
+			text-align: center;
+		}
 		#bluey {
 			background-color: black; 
 			height:  40px; 
@@ -126,6 +135,7 @@
 	<div id="container">
 		<div id="score">0</div>
 		<div id="lives">3</div>
+		<div id="timer"><label id="minutes">00</label>:<label id="seconds">00</label></div>
 	</div>
 </body>
 <script type="text/javascript">
@@ -178,6 +188,19 @@
 
 var world = randomWorld();
 
+function formatWorld(w) {
+    for (var i = 1; i < w.length - 1; i++) {
+        for (var x = 1; x < w.length - 1; x++) {
+            if (w[x-1][i] == 1 && w[x+1][i] == 1 && w[x][i-1] == 1 && w[x][i+1] == 1) {
+                w[x][i] = 1;
+            }
+        }   
+    }
+    return w;
+}
+
+world = formatWorld(world);
+
 
 	function drawWorld() {
 		output = "";
@@ -206,7 +229,7 @@ var world = randomWorld();
 			}
 		}
 		setTimeout(function() {
-			if(!alert('YOU WON')){window.location.reload();}
+			if(!alert('YOU WON, SCORE: ' + score + ", TIME: " + min + ":" + sec + ".")){window.location.reload();}
 			}, 250);
 	}
 
@@ -223,7 +246,6 @@ var world = randomWorld();
 	drawNinjaman();
 
 	var score = 0;
-	var lives = 3;
 
 	document.onkeydown = function(e) {
 		if(e.keyCode == 37) {
@@ -287,7 +309,7 @@ var world = randomWorld();
 	}
 	var pinky = {
 		x: 10,
-		y: 10
+		y: 18
 	}
 	var pumpky = {
 		x: 18,
@@ -346,13 +368,35 @@ var world = randomWorld();
 		}
 
 		drawGhosts();
-		drawWorld();
 	}
 
-	function lifeCounter(l, ninja, arr) {
-		drawGhosts();
-		drawNinjaman();
+	var seconds = document.getElementById("seconds");
+	var minutes = document.getElementById("minutes");
+	var secondsIncremented = 0;
+	var min, sec;
 
+	setInterval(timer, 1000);
+
+	function timer() {
+  		secondsIncremented++;
+  		seconds.innerHTML = formatNum(secondsIncremented % 60);
+  		minutes.innerHTML = formatNum(parseInt(secondsIncremented / 60));
+  		min = minutes.innerHTML;
+  		sec = seconds.innerHTML;
+	}
+
+	function formatNum(num) {
+  		var numF = num + "";
+  		if (numF.length < 2) {
+  			return "0" + numF;
+  		} else {
+    		return numF;
+  		}
+	}
+
+	var lives = 3;
+
+	function lifeCounter(l, ninja, arr) {
 		for (var i = 0; i < arr.length; i++) {
     		if (world[ninja.x] == world[arr[i].x] && world[ninja.y] == world[arr[i].y]) {
     			l--;
@@ -378,13 +422,14 @@ var objectNums = [[bluey, 0], [pinky, 0], [pumpky, 0], [red, 0], [scaredy, 0]];
     ghostMove(objectNums);
     
     var b = 0;
+    var temp;
     
     function ghostLoop() {
   		setTimeout(function(){
 	        ghostMove(objectNums);
 	        if (b < 10000) {
 	            ghostLoop();
-	            var temp = lifeCounter(lives, ninjaman, ghosts);
+	            temp = lifeCounter(lives, ninjaman, ghosts);
 	            lives = temp;
 	        }
         }, 100);  
@@ -392,6 +437,7 @@ var objectNums = [[bluey, 0], [pinky, 0], [pumpky, 0], [red, 0], [scaredy, 0]];
     }
     
     ghostLoop();
+
 
 </script>
 </html>
