@@ -135,7 +135,7 @@
 	<div id="container">
 		<div id="score">0</div>
 		<div id="lives">3</div>
-		<div id="timer"><label id="minutes">00</label>:<label id="seconds">00</label></div>
+		<div id="timer"><label id="minutes">0</label>:<label id="seconds">00</label></div>
 	</div>
 </body>
 <script type="text/javascript">
@@ -250,52 +250,31 @@ world = formatWorld(world);
 	document.onkeydown = function(e) {
 		if(e.keyCode == 37) {
 			if (world[ninjaman.y][ninjaman.x-1] != 1 ) {
-				ninjaman.x--;
-				if(world[ninjaman.y][ninjaman.x] == 2) {
-					score += 1;
-					document.getElementById('score').innerHTML = score;	
-				} else if(world[ninjaman.y][ninjaman.x] == 3) {
-					score += 2;
-					document.getElementById('score').innerHTML = score;			
-				} 		
+				ninjaman.x--;		
 			}
 		}
 		if(e.keyCode == 39) {
 			if(world[ninjaman.y][ninjaman.x + 1] != 1) {
 				ninjaman.x++;
-				if(world[ninjaman.y][ninjaman.x] == 2) {
-					score += 1;
-					document.getElementById('score').innerHTML = score;		
-				} else if(world[ninjaman.y][ninjaman.x] == 3) {
-					score += 2;
-					document.getElementById('score').innerHTML = score;		
-				} 
 			}
 		}
 		if(e.keyCode == 38) {
 			if (world[ninjaman.y - 1][ninjaman.x] != 1) {
 				ninjaman.y--;
-				if(world[ninjaman.y][ninjaman.x] == 2) {
-					score += 1;
-					document.getElementById('score').innerHTML = score;		
-				} else if (world[ninjaman.y][ninjaman.x] == 3) {
-					score += 2;
-					document.getElementById('score').innerHTML = score;		
-				} 
 			}
 		}
 		if(e.keyCode == 40) {
 			if (world[ninjaman.y + 1][ninjaman.x] != 1) {
 				ninjaman.y++;
-				if(world[ninjaman.y][ninjaman.x] == 2) {
-					score += 1;
-					document.getElementById('score').innerHTML = score;		
-				} else if (world[ninjaman.y][ninjaman.x] == 3) {
-					score += 2;
-					document.getElementById('score').innerHTML = score;		
-				} 
 			}
 		}
+		if(world[ninjaman.y][ninjaman.x] == 2) {
+			score += 1;
+				document.getElementById('score').innerHTML = score;	
+		} else if(world[ninjaman.y][ninjaman.x] == 3) {
+			score += 2;
+				document.getElementById('score').innerHTML = score;			
+		} 
 
 		world[ninjaman.y][ninjaman.x] = 0;
 		drawNinjaman();
@@ -372,27 +351,31 @@ world = formatWorld(world);
 
 	var seconds = document.getElementById("seconds");
 	var minutes = document.getElementById("minutes");
-	var secondsIncremented = 0;
-	var min, sec;
+	var sec = 0;
+	var min = 0;
+	var i = 0;
 
 	setInterval(timer, 1000);
 
 	function timer() {
-  		secondsIncremented++;
-  		seconds.innerHTML = formatNum(secondsIncremented % 60);
-  		minutes.innerHTML = formatNum(parseInt(secondsIncremented / 60));
-  		min = minutes.innerHTML;
-  		sec = seconds.innerHTML;
-	}
-
-	function formatNum(num) {
-  		var numF = num + "";
-  		if (numF.length < 2) {
-  			return "0" + numF;
+  		i++;
+  		if (i < 60) {
+  		    if (i < 10) {
+  		        sec = "0"+ i;
+  		        seconds.innerHTML = sec;
+  		    } else {
+  		        sec = i
+  		        seconds.innerHTML = sec;
+  		    }
   		} else {
-    		return numF;
+  		    min += 1;
+  		    sec = "00";
+  		    minutes.innerHTML = min;
+  		    seconds.innerHTML = sec;
+  		    i = 0;
   		}
 	}
+
 
 	var lives = 3;
 
@@ -413,7 +396,6 @@ world = formatWorld(world);
 		}
 
 		return l;
-
     }
 
 var ghosts = [bluey, pinky, pumpky, red, scaredy];	
@@ -437,7 +419,6 @@ var objectNums = [[bluey, 0], [pinky, 0], [pumpky, 0], [red, 0], [scaredy, 0]];
     }
     
     ghostLoop();
-
 
 </script>
 </html>
